@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Monijoy Fashions</title>
+    <link rel="stylesheet" href="monijoy.css" />
+    <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
+  </head>
+  <body>
+    <div class="animated-bg"></div>
+
+    <header id="mainHeader" class="main-header">
+      <div class="logo-animated">MONIJOY FASHIONS</div>
+
+      <div class="header-right">
+        <nav class="nav-links" id="navLinks">
+          <a onclick="showSection('dashboard')">Dashboard</a>
+          <a onclick="showSection('productsSection')">Inventory</a>
+          <a onclick="showSection('purchaseOrders')">Purchase Orders</a>
+          <a onclick="showSection('stockOut')">Deliveries</a>
+          <a onclick="showSection('reports')">Reports</a>
+          <a onclick="showSection('userManagement')">Users</a>
+        </nav>
+        <button id="logoutBtn" class="logout-btn">Logout</button>
+        <button class="hamburger" id="menuToggle">&#9776;</button>
+      </div>
+    </header>
+
+    <section id="loginSection" class="login-wrapper">
+      <div class="login-container">
+        <h2>Welcome Back</h2>
+        <p class="login-subtitle">Please log in to access the system</p>
+        <form id="loginForm">
+          <div class="input-group">
+            <label for="username">Username</label>
+            <input type="text" id="username" required />
+          </div>
+          <div class="input-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" required />
+          </div>
+          <button type="submit">Login</button>
+          <p id="loginError" class="error-text hidden">
+            Invalid username or password
+          </p>
+        </form>
+      </div>
+    </section>
+
+    <main id="dashboard">
+      <!-- Dashboard will be populated later from the database -->
+      <section class="dashboard-cards">
+        <div class="card">
+          <h3>Total Products</h3>
+          <p><span id="totalProducts"></span></p>
+        </div>
+        <div class="card">
+          <h3>Low Stock Items</h3>
+          <p><span id="lowStock"></span></p>
+        </div>
+        <div class="card">
+          <h3>Stocked Out Today</h3>
+          <p><span id="stockedOut"></span></p>
+        </div>
+        <div class="card">
+          <h3>Recently Restocked</h3>
+          <p><span id="recentRestocks"></span></p>
+        </div>
+      </section>
+
+      <div id="dashboard">
+        <!-- Other dashboard cards -->
+        <div id="recentActivity" class="card">
+          <h3>🕓 Recent Activity</h3>
+          <ul id="recentActivityList" class="activity-list">
+            <li>No recent activity</li>
+          </ul>
+        </div>
+      </div>
+
+      <section class="low-stock-section">
+        <h2>Low Stock Alerts</h2>
+        <table class="low-stock-table">
+          <thead>
+            <tr>
+              <th>Category</th>
+              <th>Description</th>
+              <th>Quantity</th>
+            </tr>
+          </thead>
+          <tbody id="lowStockBody">
+            <!-- Dynamic low stock rows go here -->
+          </tbody>
+        </table>
+      </section>
+    </main>
+
+    <section id="productsSection" class="hidden">
+      <h2>Product Inventory</h2>
+      <button id="addProductBtn">+ Add Product</button>
+
+      <!-- Add Product Form Popup -->
+      <div id="productFormContainer" class="hidden overlay-popup">
+        <div class="popup-card">
+          <span class="close-btn" id="closeForm">&times;</span>
+          <h3>Add New Product</h3>
+
+          <form id="productForm">
+            <div class="form-preview-wrapper">
+              <!-- LEFT: Form Inputs -->
+              <div class="form-section">
+                <label>
+                  Category:
+                  <select id="productCategory">
+                    <option value="">Select Category</option>
+                    <option>Girls</option>
+                    <option>Boys</option>
+                    <option>Ladies</option>
+                    <option>Men</option>
+                    <option>Youth</option>
+                  </select>
+                </label>
+
+                <label>
+                  Description:
+                  <input type="text" id="productDescription" required />
+                </label>
+
+                <label>
+                  Quantity:
+                  <input type="number" id="productQuantity" required min="1" />
+                </label>
+
+                <label>
+                  Barcode Number:
+                  <input type="text" id="productBarcode" required />
+                </label>
+              </div>
+
+              <div id="imagePreview" class="image-preview-box">
+                <label for="productImageInput">Product Image:</label>
+                <input
+                  type="file"
+                  id="productImageInput"
+                  accept="image/*"
+                  onchange="previewImage(event)"
+                />
+                <img
+                  id="previewImg"
+                  src=""
+                  alt="Image Preview"
+                  style="display: none"
+                />
+              </div>
+            </div>
+
+            <!-- SUBMIT BUTTON -->
+            <div class="submit-container">
+              <button type="submit" class="submit-btn">Add to Inventory</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <div class="stock-controls">
+        <div class="stock-header">
+          <h3>Stock List</h3>
+
+          <div class="search-filter-group">
+            <select id="categoryFilter">
+              <option value="">All Categories</option>
+              <option value="Girls">Girls</option>
+              <option value="Boys">Boys</option>
+              <option value="Ladies">Ladies</option>
+              <option value="Men">Men</option>
+              <option value="Youth">Youth</option>
+            </select>
+
+            <div class="search-container">
+              <span
+                class="iconify"
+                data-icon="mdi:magnify"
+                data-width="20"
+                data-height="20"
+              ></span>
+              <input
+                type="text"
+                id="searchInput"
+                placeholder="Search description or barcode..."
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Category</th>
+            <th>Description</th>
+            <th>Quantity</th>
+            <th>Barcode</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="productTableBody"></tbody>
+      </table>
+      <p id="noResultsMessage" class="hidden">No products match your search.</p>
+      <div id="toast" class="toast hidden">
+        Item deleted. <button id="undoBtn">Undo</button>
+      </div>
+    </section>
+
+    <section id="purchaseOrders" class="hidden">
+      <h2>Sent Purchase Orders</h2>
+      <table class="po-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Customer</th>
+            <th>Date & Time</th>
+            <th>File</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="poList">
+          <!-- Orders will be listed here -->
+        </tbody>
+      </table>
+    </section>
+
+    <section id="stockOut" class="hidden">
+      <h3>Create Stock Out</h3>
+
+      <div class="stockout-container">
+        <!-- Left: Form -->
+        <div class="stockout-form">
+          <label>Code: <input type="text" id="so-code" /></label>
+          <label>Barcode: <input type="text" id="so-barcode" /></label>
+          <label>Description: <input type="text" id="so-desc" /></label>
+          <label>Quantity: <input type="number" id="so-qty" min="1" /></label>
+          <button onclick="addStockOutItem()">Add Item</button>
+        </div>
+
+        <!-- Right: Preview -->
+        <div class="stockout-preview">
+          <h3>Items List</h3>
+          <table id="stockout-item-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Code</th>
+                <th>Barcode</th>
+                <th>Description</th>
+                <th>Qty</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Stock Out Summary (Below) -->
+      <div class="stockout-summary">
+        <h3>Submit Stock Out</h3>
+        <label>Date: <input type="date" id="so-date" /></label>
+        <label>Customer/Location: <input type="text" id="so-customer" /></label>
+        <label>Order Number: <input type="text" id="so-order" /></label>
+        <button onclick="submitStockOut()">Submit & Generate File</button>
+      </div>
+
+      <hr />
+
+      <h3>Past Stock Outs</h3>
+      <table id="stockout-records-table">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Customer</th>
+            <th>Order No.</th>
+            <th>File</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </section>
+
+    <section id="reports" class="hidden">
+      <h2>Reports Section (Coming Soon)</h2>
+    </section>
+
+    <section id="userManagement" class="hidden">
+      <h2>User Management</h2>
+
+      <div class="user-form">
+        <h3>Add New User</h3>
+        <form id="userForm">
+          <label
+            >Username: <input type="text" id="newUsername" required
+          /></label>
+          <label
+            >Password: <input type="password" id="newPassword" required
+          /></label>
+          <label>
+            Role:
+            <select id="userRole">
+              <option value="Staff">Staff</option>
+              <option value="Admin">Admin</option>
+            </select>
+          </label>
+          <button type="submit">Create User</button>
+        </form>
+      </div>
+
+      <hr />
+
+      <h3>Existing Users</h3>
+      <table class="user-table">
+        <thead>
+          <tr>
+            <th>Username</th>
+            <th>Role</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="userList">
+          <!-- Users will be populated here -->
+        </tbody>
+      </table>
+    </section>
+
+    <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>
